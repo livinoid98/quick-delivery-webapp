@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Delivery</title>
+    <link rel="stylesheet" href="./style.css" type="text/css"/>
+</head>
+<body>
+    <div class="quick-delivery-background-wrap">
+        <div class="quick-delivery-content-wrap">
+            <h3>당일 배송 주문서 작성</h3>
+            <form>
+                <div class="product-wrap">
+                    <img src="" alt="">
+                    <p>상품 이름</p>
+                </div>
+                <div class="applicant-wrap">
+                    <h4>신청자 정보</h4>
+                    <input type="text" name="applicant-name" placeholder="신청자 성함"/>
+                    <input type="text" name="applicant-phone" placeholder="신청자 전화번호"/>
+                </div>
+                <div class="arrivals-wrap">
+                    <h4>보내는 분 정보</h4>
+                    <input type="text" name="arrival-name" placeholder="보내는 분 성함"/>
+                    <input type="text" name="arrival-phone" placeholder="보내는 분 전화번호"/>
+                    <input type="text" name="arrival-address" placeholder="보내는 분 주소"/>
+                    <input type="text" name="arrival-address-detail" placeholder="보내는 분 상세주소"/>
+                </div>
+                <div class="departures-wrap">
+                    <h4>받는 분 정보</h4>
+                    <input type="text" name="departures-name" placeholder="받는 분 성함"/>
+                    <input type="text" name="departures-phone" placeholder="받는 분 전화번호"/>
+                    <input type="text" name="departures-address" placeholder="받는 분 주소"/>
+                    <input type="text" name="departures-address-detail" placeholder="받는 분 상세주소"/>
+                </div>
+                <div class="requested-wrap">
+                    <h4>추가 요청사항</h4>
+                    <textarea name="requested" placeholder="추가 요청사항"></textarea>
+                </div>
+            </form>
+            <div class="button-wrap">
+                <button class="submit">신청하기</button>
+                <button><a href="#none">닫기</a></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const applicant_name = document.querySelector('input[name="applicant-name"]');
+        const applicant_phone = document.querySelector('input[name="applicant-phone"]');
+        const arrival_name = document.querySelector('input[name="arrival-name"]');
+        const arrival_phone = document.querySelector('input[name="arrival-phone"]');
+        const arrival_address = document.querySelector('input[name="arrival-address"]');
+        const arrival_address_detail = document.querySelector('input[name="arrival-address-detail"]');
+        const departure_name = document.querySelector('input[name="departures-name"]');
+        const departure_phone = document.querySelector('input[name="departures-phone"]');
+        const departure_address = document.querySelector('input[name="departures-address"]');
+        const departure_address_detail = document.querySelector('input[name="departures-address-detail"]');
+        const request = document.querySelector('textarea[name="requested"]');
+        const submit = document.querySelector('.submit');
+
+        let applicant_name_val = '';
+        let applicant_phone_val = '';
+        let arrival_name_val = '';
+        let arrival_phone_val = '';
+        let arrival_address_val = '';
+        let arrival_address_detail_val = '';
+        let departure_name_val = '';
+        let departure_phone_val = '';
+        let departure_address_val = '';
+        let departure_address_detail_val = '';
+        let request_val = '';
+
+        submit.addEventListener('click', function(e){
+            e.preventDefault();
+            applicant_name_val = applicant_name.value;
+            applicant_phone_val = applicant_phone.value;
+            arrival_name_val = arrival_name.value;
+            arrival_phone_val = arrival_phone.value;
+            arrival_address_val = arrival_address.value;
+            arrival_address_detail_val = arrival_address_detail.value;
+            departure_name_val = departure_name.value;
+            departure_phone_val = departure_phone.value;
+            departure_address_val = departure_address.value;
+            departure_address_detail_val = departure_address_detail.value;
+            request_val = request.value;
+
+            let create = fetch('https://api-server-dev-z27272c3ca-du.a.run.app/open/invoice/receipt',{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body: JSON.stringify({
+                    "receipt":{
+                        "applicant":{
+                            "name":`${applicant_name_val}`,
+                            "phone":`${applicant_phone_val}`
+                        },
+                        "arrivals":{
+                            "name":`${arrival_name_val}`,
+                            "phone":`${arrival_phone_val}`,
+                            "address":`${arrival_address_val}`,
+                            "detail":`${arrival_address_detail_val}`
+                        },
+                        "departures":{
+                            "name":`${departure_name_val}`,
+                            "phone":`${departure_phone_val}`,
+                            "address":`${departure_address_val}`,
+                            "detail":`${departure_address_detail_val}`
+                        },
+                        "carType":"오토바이",
+                        "paymentType":"신용",
+                        "requested":`${request}`,
+                        "boxType":1
+                    },
+                    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYzNDdjNGRmNzRmNjU0MmFjZTVlMjU0OSIsIm5hbWUiOiLsnbjsiqTtjIXthLDsiqQiLCJpZCI6IuyduOyKpO2Mhe2EsOyKpCIsInBhc3MiOiJKRU9UR09lZ2dTaHBSYldMa1c5MXpsUnFjSG9vS0ZYVU5NNGRkZTF1eE1RUWpHTjRvcnFlZmZyenp4STdFVWhqUlFvc2lrL2IrYlQ5ZUpIVFNZbFNEdz09Iiwic2FsdCI6IlFlOG03K0lHdDVRKytBdjRTa1Y2dlR5QVRiT1VJMzZ5SGlTQlpkQURrdkFROTFidzkzV1o3cVFsdU1vWFhOTUlLM2NYVnFRRklkUUNzQTBsVWxGbWFnPT0iLCJwaG9uZSI6IiIsIm1lbW8iOiIiLCJtaWxlYWdlIjowLCJsZXZlbCI6MSwiYm9vayI6W3sidGl0bGUiOiLrgrTso7zshowiLCJuYW1lIjoi7J247Iqk7YyF7YSw7IqkIiwicGhvbmUiOiIiLCJhZGRyZXNzIjoiIiwiZGV0YWlsIjpudWxsfV0sInByaWNlVHlwZSI6Im9wZW4iLCJjcmVhdGVkQXQiOiIyMDIyLTEwLTEzVDA3OjU3OjE5LjAyMVoiLCJhdXRoIjoiYWQwNTQ0ZDUtNDIzMi00ZmQ1LTg1NWItOTMyMmQ3ZmZhNmVmIn0sImlhdCI6MTY2NTcyODQ2NCwiZXhwIjoxNjY1NzY0NDY0LCJpc3MiOiJsYXN0bWlsZSJ9.hN_zCpTvwPqKDyF8WYDLiMGXnuZq4Sfj2bWA7MyOJzk"
+                }),
+            }).then(res => res.json())
+            .then(data => {
+                if(data.state !== 0){
+                    alert('배송 접수 실패, 주소가 올바르게 작성되었는지 확인해주세요.');
+                }else if(data.state === 0){
+                    alert('퀵배송 접수 완료, 결제를 진행해주셔야 최종 완료됩니다.');
+                }
+                console.log(data);
+            });
+        });
+    </script>
+</body>
+</html>
