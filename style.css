@@ -1,3 +1,7 @@
+.quick-authenticate button{
+    cursor:pointer;
+}
+
 .quick-delivery-background-wrap{
     position:absolute;
     top:0px;
@@ -6,6 +10,8 @@
     width:100%;
     height:100%;
     background-color:rgba(0,0,0,0.4);
+
+    display:none;
 }
 
 .quick-delivery-background-wrap .quick-delivery-content-wrap{

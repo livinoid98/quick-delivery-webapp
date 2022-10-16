@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="./style.css" type="text/css"/>
 </head>
 <body>
+    <div class="quick-authenticate">
+        <button class="quick-authenticate-button">당일 배송하기</button>
+    </div>
     <div class="quick-delivery-background-wrap">
         <div class="quick-delivery-content-wrap">
             <h3>당일 배송 주문서 작성</h3>
@@ -42,11 +45,14 @@
             </form>
             <div class="button-wrap">
                 <button class="submit">신청하기</button>
-                <button>닫기</button>
+                <button class="close">닫기</button>
             </div>
         </div>
     </div>
     <script>
+        const quick_authenticate_button = document.querySelector('.quick-authenticate-button');
+
+        const modal_back = document.querySelector('.quick-delivery-background-wrap');
         const applicant_name = document.querySelector('input[name="applicant-name"]');
         const applicant_phone = document.querySelector('input[name="applicant-phone"]');
         const arrival_name = document.querySelector('input[name="arrival-name"]');
@@ -59,6 +65,7 @@
         const departure_address_detail = document.querySelector('input[name="departures-address-detail"]');
         const request = document.querySelector('textarea[name="requested"]');
         const submit = document.querySelector('.submit');
+        const close = document.querySelector('.close');
 
         let applicant_name_val = '';
         let applicant_phone_val = '';
@@ -71,6 +78,31 @@
         let departure_address_val = '';
         let departure_address_detail_val = '';
         let request_val = '';
+
+        let token = "";
+
+        quick_authenticate_button.addEventListener('click', function(){
+            modal_back.style.display = "block";
+
+            let auth = fetch('https://api-server-dev-z27272c3ca-du.a.run.app/open/authentication',{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body: JSON.stringify({
+                    "id":"인스팅터스",
+                    "pw":"0000"
+                }),
+            }).then(res => res.json())
+            .then(data => {
+                if(data.state !== 0){
+                    alert('시스템 오류, 관리자에게 문의해주시기 바랍니다.');
+                }else if(data.state === 0){
+                    token = data.data.token;
+                }
+                console.log(token);
+            });
+        });
 
         submit.addEventListener('click', function(e){
             e.preventDefault();
@@ -114,17 +146,23 @@
                         "requested":`${request}`,
                         "boxType":1
                     },
-                    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYzNDdjNGRmNzRmNjU0MmFjZTVlMjU0OSIsIm5hbWUiOiLsnbjsiqTtjIXthLDsiqQiLCJpZCI6IuyduOyKpO2Mhe2EsOyKpCIsInBhc3MiOiJKRU9UR09lZ2dTaHBSYldMa1c5MXpsUnFjSG9vS0ZYVU5NNGRkZTF1eE1RUWpHTjRvcnFlZmZyenp4STdFVWhqUlFvc2lrL2IrYlQ5ZUpIVFNZbFNEdz09Iiwic2FsdCI6IlFlOG03K0lHdDVRKytBdjRTa1Y2dlR5QVRiT1VJMzZ5SGlTQlpkQURrdkFROTFidzkzV1o3cVFsdU1vWFhOTUlLM2NYVnFRRklkUUNzQTBsVWxGbWFnPT0iLCJwaG9uZSI6IiIsIm1lbW8iOiIiLCJtaWxlYWdlIjowLCJsZXZlbCI6MSwiYm9vayI6W3sidGl0bGUiOiLrgrTso7zshowiLCJuYW1lIjoi7J247Iqk7YyF7YSw7IqkIiwicGhvbmUiOiIiLCJhZGRyZXNzIjoiIiwiZGV0YWlsIjpudWxsfV0sInByaWNlVHlwZSI6Im9wZW4iLCJjcmVhdGVkQXQiOiIyMDIyLTEwLTEzVDA3OjU3OjE5LjAyMVoiLCJhdXRoIjoiYWQwNTQ0ZDUtNDIzMi00ZmQ1LTg1NWItOTMyMmQ3ZmZhNmVmIn0sImlhdCI6MTY2NTcyODQ2NCwiZXhwIjoxNjY1NzY0NDY0LCJpc3MiOiJsYXN0bWlsZSJ9.hN_zCpTvwPqKDyF8WYDLiMGXnuZq4Sfj2bWA7MyOJzk"
+                    "token":`${token}`
                 }),
             }).then(res => res.json())
             .then(data => {
                 if(data.state !== 0){
                     alert('배송 접수 실패, 주소가 올바르게 작성되었는지 확인해주세요.');
                 }else if(data.state === 0){
-                    alert('퀵배송 접수 완료, 결제를 진행해주셔야 최종 완료됩니다.');
+                    alert(`퀵배송 접수 완료, 결제를 진행해주셔야 최종 완료됩니다.
+                    
+운송장번호 [${data.data.invoice}]`);
                 }
                 console.log(data);
             });
+        });
+
+        close.addEventListener('click', function(){
+            modal_back.style.display = "none";
         });
     </script>
 </body>
